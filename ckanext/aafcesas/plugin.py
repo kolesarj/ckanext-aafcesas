@@ -14,8 +14,8 @@ class AafcesasPlugin(plugins.SingletonPlugin):
         '''Update CKAN's config with settings needed by this plugin.
         '''
         toolkit.add_template_directory(config, 'templates')
-        self.header_parameter = config.get('ckan.simplesso.header_parameter', 'user-id')
-        self.email_domain = config.get('ckan.simplesso.email_domain')
+        self.header_userid = config.get('ckan.aafcesas.header_userid', 'partyID')
+        self.header_email = config.get('ckan.aafcesas.simplesso.header_email', 'email')
 
     def login(self):
         pass
@@ -25,18 +25,20 @@ class AafcesasPlugin(plugins.SingletonPlugin):
         If a logged in user is found, set toolkit.c.user to be their user name.
         '''
 
-        if self.header_parameter in toolkit.request.headers:
-            userid = toolkit.request.headers.get(self.header_parameter).lower()
-            email = userid + "@" + self.email_domain
-            user = get_user_by_username(userid)
+        if self.header_userid in toolkit.request.headers:
+            userid = toolkit.request.headers.get(self.header_userid).lower()
+            email = toolkit.request.headers.get(self.header_email).lower()
+            username = <construct username>
+            user = get_user_by_email(email)
 
             if not user:
-                # A user with this username doesn't yet exist in CKAN
+                # A user with this email doesn't yet exist in CKAN
                 # - so create one.
                 user = toolkit.get_action('user_create')(
                     context={'ignore_auth': True},
-                    data_dict={'email': email,
-                               'name': userid,
+                    data_dict={'id':userid,
+                               'email': email,
+                               'name': username,
                                'password': generate_password()})
             toolkit.c.user = user['name']
 
