@@ -24,13 +24,11 @@ class AafcesasPlugin(plugins.SingletonPlugin):
         '''Identify which user (if any) is logged in via simple SSO header.
         If a logged in user is found, set toolkit.c.user to be their user name.
         '''
-
         if self.header_userid in toolkit.request.headers:
             userid = toolkit.request.headers.get(self.header_userid).lower()
             email = toolkit.request.headers.get(self.header_email).lower()
             username = <construct username>
             user = get_user_by_email(email)
-
             if not user:
                 # A user with this email doesn't yet exist in CKAN
                 # - so create one.
