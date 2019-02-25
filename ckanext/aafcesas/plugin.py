@@ -82,7 +82,7 @@ class AafcesasPlugin(plugins.SingletonPlugin):
        else:
           return None
 
-   def generate_password():
+    def generate_password():
        '''Generate a random password.
        '''
        # FIXME: Replace this with a better way of generating passwords, or enable
