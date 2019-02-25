@@ -15,7 +15,7 @@ class AafcesasPlugin(plugins.SingletonPlugin):
         '''
         toolkit.add_template_directory(config, 'templates')
         self.header_userid = config.get('ckan.aafcesas.header_userid', 'partyID')
-        self.header_email = config.get('ckan.aafcesas.simplesso.header_email', 'email')
+        self.header_email = config.get('ckan.aafcesas.header_email', 'email')
 
     def login(self):
         pass
