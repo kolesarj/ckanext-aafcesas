@@ -26,18 +26,43 @@ class AafcesasPlugin(plugins.SingletonPlugin):
         '''Identify which user (if any) is logged in via simple SSO header.
         If a logged in user is found, set toolkit.c.user to be their user name.
         '''
-        if self.header_userid in toolkit.request.headers:
-            userid = toolkit.request.headers.get(self.header_userid).lower()
+        
+        logger = logging.getLogger(__name__)
+        logger.debug('ESAS: HEADER SENT TO CKAN')
+        logger.debug(self.header_parameter)
+        logger.debug(toolkit.request.headers)
+        if self.header_parameter in toolkit.request.headers:
+            logger.debug('PartyID')
+            logger.debug(toolkit.request.headers.get(self.header_parameter))
+            userid = toolkit.request.headers.get(self.header_parameter).lower()
+            username = toolkit.request.headers.get(self.header_username).lower()
             email = toolkit.request.headers.get(self.header_email).lower()
-            username = <construct username>
-            user = get_user_by_email(email)
+            user = get_user_by_userid(userid)
+
+            if user:
+                # Check if ESAS email for user has changed.
+                # If it has changed then update user email to match
+                # CKAN is not system of record for email.
+                # Changes as needed to match ESAS header.
+                if not email=user['email']
+                    logger.log('ESAS: A user account has changed email.')
+                    user=toolkit.get_action('user_update')(a
+                        context={'ignore_auth': True},
+                        data_dict={'id':userid,
+                                   'email': email})
             if not user:
-                # A user with this email doesn't yet exist in CKAN
+                # Check if user email is already associated with an existing account.
+                # If there are duplicate emails raise error
+                email_check = get_user_by_email(email)
+                if email_check:
+                    logger.error('ESAS: An existing account already has this email')
+                # A user with this username doesn't yet exist in CKAN
                 # - so create one.
+                logger.log('ESAS: user not found. Creating new CKAN user.')
                 user = toolkit.get_action('user_create')(
                     context={'ignore_auth': True},
-                    data_dict={'id':userid,
-                               'email': email,
+                    data_dict={'email': email,
+                               'id': userid,
                                'name': username,
                                'password': generate_password()})
             toolkit.c.user = user['name']
