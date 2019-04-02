@@ -25,8 +25,7 @@ class AafcesasPlugin(plugins.SingletonPlugin):
     def identify(self):
         '''Identify which user (if any) is logged in via simple SSO header.
         If a logged in user is found, set toolkit.c.user to be their user name.
-        '''
-        
+        '''      
         logger = logging.getLogger(__name__)
         logger.debug('ESAS: HEADER SENT TO CKAN')
         logger.debug(self.header_parameter)
@@ -38,7 +37,6 @@ class AafcesasPlugin(plugins.SingletonPlugin):
             username = toolkit.request.headers.get(self.header_username).lower()
             email = toolkit.request.headers.get(self.header_email).lower()
             user = get_user_by_userid(userid)
-
             if user:
                 # Check if ESAS email for user has changed.
                 # If it has changed then update user email to match
@@ -81,7 +79,17 @@ class AafcesasPlugin(plugins.SingletonPlugin):
        # way to search for users by email address using the API yet.
        import ckan.model
        user = ckan.model.User.get(username)
-
+       if user:
+          user_dict = toolkit.get_action('user_show')(data_dict={'id': user.id})
+          return user_dict
+       else:
+          return None
+ 
+    def get_user_by_userid(userid):
+       '''Return the CKAN user with the given userid.
+       :rtype: A CKAN user dict
+       '''
+       user = ckan.model.User.get(userid)
        if user:
           user_dict = toolkit.get_action('user_show')(data_dict={'id': user.id})
           return user_dict
@@ -91,7 +99,6 @@ class AafcesasPlugin(plugins.SingletonPlugin):
     def get_user_by_email(email):
        '''Return the CKAN user with the given email address.
        :rtype: A CKAN user dict
-
        '''
        # We do this by accessing the CKAN model directly, because there isn't a
        # way to search for users by email address using the API yet.
