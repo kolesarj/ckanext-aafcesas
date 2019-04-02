@@ -14,8 +14,10 @@ class AafcesasPlugin(plugins.SingletonPlugin):
         '''Update CKAN's config with settings needed by this plugin.
         '''
         toolkit.add_template_directory(config, 'templates')
-        self.header_userid = config.get('ckan.aafcesas.header_userid', 'partyID')
+        self.header_parameter = config.get('ckan.aafcesas.header_parameter', 'partyID')
+        self.header_username = config.get('ckan.aafcesas.header_username', 'username')
         self.header_email = config.get('ckan.aafcesas.header_email', 'email')
+        self.email_domain = config.get('ckan.aafcesas.email_domain')
 
     def login(self):
         pass
