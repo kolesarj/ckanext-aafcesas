@@ -13,7 +13,7 @@ class AafcesasPlugin(plugins.SingletonPlugin):
         '''Update CKAN's config with settings needed by this plugin.
         '''
         toolkit.add_template_directory(config, 'templates')
-        self.header_parameter = config.get('ckan.aafcesas.header_parameter', 'partyID')
+        self.header_parameter = config.get('ckan.aafcesas.header_userid', 'PARTYID')
         self.header_username = config.get('ckan.aafcesas.header_username', 'username')
         self.header_email = config.get('ckan.aafcesas.header_email', 'email')
         self.email_domain = config.get('ckan.aafcesas.email_domain')
@@ -27,12 +27,12 @@ class AafcesasPlugin(plugins.SingletonPlugin):
         '''      
         logger = logging.getLogger(__name__)
         logger.debug('ESAS: HEADER SENT TO CKAN')
-        logger.debug(self.header_parameter)
+        logger.debug(self.header_userid)
         logger.debug(toolkit.request.headers)
         if self.header_parameter in toolkit.request.headers:
-            logger.debug('PartyID')
-            logger.debug(toolkit.request.headers.get(self.header_parameter))
-            userid = toolkit.request.headers.get(self.header_parameter).lower()
+            logger.debug('PartyID:')
+            logger.debug(toolkit.request.headers.get(self.header_userid))
+            userid = toolkit.request.headers.get(self.header_userid).lower()
             username = toolkit.request.headers.get(self.header_username).lower()
             email = toolkit.request.headers.get(self.header_email).lower()
             user = get_user_by_userid(userid)
