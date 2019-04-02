@@ -2,7 +2,6 @@ import uuid
 import ckan.plugins as plugins
 import ckan.plugins.toolkit as toolkit
 
-
 class AafcesasPlugin(plugins.SingletonPlugin):
     '''A CKAN plugin that enables SSO using a simple header parameter.
     '''
